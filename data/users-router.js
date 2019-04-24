@@ -43,9 +43,30 @@ usersRouter.get("/:id", (req, res) => {
           .json({ error: "The post information could not be retrieved." });
       });
   });
+
 // GET USER POSTS =================
 // POST =================
+
 // DELETE =================
+usersRouter.delete("/:id", (req, res) => {
+    const userId = req.params.id;
+    users
+      .remove(userId)
+      .then(user => {
+        if (user) {
+          res.status(204).end();
+        } else {
+          res
+            .status(404)
+            .json({ error: "The post with the specified ID does not exist." });
+        }
+      })
+      .catch(err => {
+        res.status(500).json({
+          error: "The post could not be removed"
+        });
+      });
+  });
 // PUT =================
 
 
