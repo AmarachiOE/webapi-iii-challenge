@@ -12,62 +12,82 @@ Write custom middleware to ensure that the user's name is upper-cased before the
 
 // GET ALL USERS =================
 usersRouter.get("/", (req, res) => {
-    users.get()
-      .then(data => {
-        res.status(200).json(data);
-      })
-      .catch(err => {
-        res
-          .status(500)
-          .json({ error: "The users information could not be retrieved." });
-      });
-  });
+  users
+    .get()
+    .then(data => {
+      res.status(200).json(data);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: "The user information could not be retrieved." });
+    });
+});
 
 // GET USER BY ID =================
 usersRouter.get("/:id", (req, res) => {
-    const userId = req.params.id;
-    users
-      .getById(userId)
-      .then(user => {
-        if (user.length == 0 || user === undefined) {
-          res
-            .status(404)
-            .json({ error: "The post with the specified ID does not exist." });
-        } else {
-          res.status(200).json(user);
-        }
-      })
-      .catch(err => {
+  const userId = req.params.id;
+  users
+    .getById(userId)
+    .then(user => {
+      if (user.length == 0 || user === undefined) {
         res
-          .status(500)
-          .json({ error: "The post information could not be retrieved." });
-      });
-  });
+          .status(404)
+          .json({ error: "The user with the specified ID does not exist." });
+      } else {
+        res.status(200).json(user);
+      }
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: "The user's information could not be retrieved." });
+    });
+});
 
 // GET USER POSTS =================
+usersRouter.get("/:id/posts", (req, res) => {
+  const userId = req.params.id;
+  users
+    .getUserPosts(userId)
+    .then(user => {
+      if (user.length == 0 || user == undefined || !user) {
+        res
+          .status(404)
+          .json({ error: "The user with the specified ID does not exist." });
+      } else {
+        res.status(200).json(user);
+      }
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: "This user's posts could not be retrieved." });
+    });
+});
+
 // POST =================
 
 // DELETE =================
 usersRouter.delete("/:id", (req, res) => {
-    const userId = req.params.id;
-    users
-      .remove(userId)
-      .then(user => {
-        if (user) {
-          res.status(204).end();
-        } else {
-          res
-            .status(404)
-            .json({ error: "The post with the specified ID does not exist." });
-        }
-      })
-      .catch(err => {
-        res.status(500).json({
-          error: "The post could not be removed"
-        });
+  const userId = req.params.id;
+  users
+    .remove(userId)
+    .then(user => {
+      if (user) {
+        res.status(204).end();
+      } else {
+        res
+          .status(404)
+          .json({ error: "The post with the specified ID does not exist." });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: "The post could not be removed"
       });
-  });
+    });
+});
 // PUT =================
-
 
 module.exports = usersRouter;
