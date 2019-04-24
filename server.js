@@ -17,4 +17,6 @@ server.get("/", (req, res) => {
     res.send(`<h2>Welcome to Challenge III !</h2>`)
 });
 
+server.use("/api/posts", postsRouter);
+
 module.exports = server;
