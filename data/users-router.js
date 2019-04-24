@@ -118,6 +118,31 @@ usersRouter.delete("/:id", (req, res) => {
       });
     });
 });
+
 // PUT =================
+usersRouter.put("/:id", allCaps, (req, res) => {
+  const userInfo = req.body;
+  const userId = req.params.id;
+  if (!userInfo.name || userInfo.name.length == 0) {
+    res.status(400).json({ error: "Please provide a name for the user." });
+  } else {
+    users
+      .update(userId, userInfo)
+      .then(user => {
+        if (user) {
+          res.status(200).json(user);
+        } else {
+          res
+            .status(400)
+            .json({ error: "The user with the specified ID does not exist." });
+        }
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({ error: "The post information could not be modified." });
+      });
+  }
+});
 
 module.exports = usersRouter;
