@@ -39,7 +39,33 @@ postsRouter.get("/:id", (req, res) => {
         .json({ error: "The post information could not be retrieved." });
     });
 });
-// POST =================
+
+// POST ================= 
+
+postsRouter.post("/", (req, res) => {
+    const newPost = req.body;
+    console.log("Request Body: ", newPost);
+    if (!newPost.text) {
+      res
+        .status(400)
+        .json({ error: "Please provide text for the post." });
+    } else {
+      posts
+        .insert(newPost)
+        .then(post => {
+          res.status(201).json(post);
+        })
+        .catch(err => {
+          res.status(500).json({
+            error: "There was an error while saving the post to the database."
+          });
+        });
+    }
+  });
+
+
+
+/*
 postsRouter.post("/", (req, res) => {
   const newPost = req.body;
   const userId = req.params.id;
@@ -71,12 +97,15 @@ postsRouter.post("/", (req, res) => {
       res.status(400).json({ error: "Please provide text for the post." });
     });
 });
+*/
 
 /*
  
- 
+ // ========== ORIGINAL ==============
+
  postsRouter.post("/", (req, res) => {
     const newPost = req.body;
+    const newPostId = req.params.id;
     console.log("Request Body: ", newPost);
     if (!newPost.text) {
       res
@@ -97,10 +126,34 @@ postsRouter.post("/", (req, res) => {
   });
  
  
- 
- 
+  // ===== TESTING NEW METHOD ======
+
+  postsRouter.post("/", (req, res) => {
+    const newPost = req.body;
+    const newPostId = req.params.id;
+    console.log("Request Body: ", newPost);
+    if (!newPost.text) {
+      res
+        .status(400)
+        .json({ error: "Please provide text for the post." });
+    } else {
+      posts
+        .insert(newPost)
+        .then(post => {
+            posts.getById(newPostId);
+          res.status(201).json(post);
+        })
+        .catch(err => {
+          res.status(500).json({
+            error: "There was an error while saving the post to the database."
+          });
+        });
+    }
+  });
  
  */
+ 
+ 
 
 // DELETE =================
 postsRouter.delete("/:id", (req, res) => {
@@ -123,7 +176,7 @@ postsRouter.delete("/:id", (req, res) => {
       });
   });
 
-  
+
 // PUT =================
 postsRouter.put("/:id", (req, res) => {
     const postId = req.params.id;
