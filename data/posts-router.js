@@ -40,38 +40,60 @@ postsRouter.get("/:id", (req, res) => {
     });
 });
 
-// POST ================= 
+// POST =================
 
 postsRouter.post("/", (req, res) => {
-    const newPost = req.body;
-    console.log("Request Body: ", newPost);
-    if (!newPost.text || !newPost.user_id) {
-      res
-        .status(400)
-        .json({ error: "Please provide text for the post." });
-    } else {
-      posts
-        .insert(newPost)
-        .then(post => {
-          res.status(201).json(post);
-        })
-        .catch(err => {
-          res.status(500).json({
-            error: "There was an error while saving the post to the database."
-          });
+  const newPost = req.body;
+  console.log("Request Body: ", newPost);
+  if (!newPost.text || !newPost.user_id) {
+    res.status(400).json({ error: "Please provide text for the post." });
+  } else {
+    posts
+      .insert(newPost)
+      .then(post => {
+        res.status(201).json(post);
+      })
+      .catch(err => {
+        res.status(500).json({
+          error: "There was an error while saving the post to the database."
         });
-    }
-  });
- 
+      });
+  }
+});
 
 // DELETE =================
 postsRouter.delete("/:id", (req, res) => {
-    const postId = req.params.id;
+  const postId = req.params.id;
+  posts
+    .remove(postId)
+    .then(post => {
+      if (post) {
+        res.status(204).end();
+      } else {
+        res
+          .status(404)
+          .json({ error: "The post with the specified ID does not exist." });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: "The post could not be removed"
+      });
+    });
+});
+
+// PUT =================
+postsRouter.put("/:id", (req, res) => {
+  const postId = req.params.id;
+  const postInfo = req.body;
+  if (!postInfo.text) {
+    res.status(400).json({ error: "Please provide text for the post." });
+  } else {
     posts
-      .remove(postId)
+      .update(postId, postInfo)
       .then(post => {
         if (post) {
-          res.status(204).end();
+          res.status(200).json(post);
         } else {
           res
             .status(404)
@@ -79,39 +101,11 @@ postsRouter.delete("/:id", (req, res) => {
         }
       })
       .catch(err => {
-        res.status(500).json({
-          error: "The post could not be removed"
-        });
+        res
+          .status(500)
+          .json({ error: "The post information could not be modified." });
       });
-  });
-
-
-// PUT =================
-postsRouter.put("/:id", (req, res) => {
-    const postId = req.params.id;
-    const postInfo = req.body;
-    if (!postInfo.text) {
-      res
-        .status(400)
-        .json({ error: "Please provide text for the post." });
-    } else {
-      posts
-        .update(postId, postInfo)
-        .then(post => {
-          if (post) {
-            res.status(200).json(post);
-          } else {
-            res
-              .status(404)
-              .json({ error: "The post with the specified ID does not exist." });
-          }
-        })
-        .catch(err => {
-          res
-            .status(500)
-            .json({ error: "The post information could not be modified." });
-        });
-    }
-  });
+  }
+});
 
 module.exports = postsRouter;
