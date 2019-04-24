@@ -45,7 +45,7 @@ postsRouter.get("/:id", (req, res) => {
 postsRouter.post("/", (req, res) => {
     const newPost = req.body;
     console.log("Request Body: ", newPost);
-    if (!newPost.text) {
+    if (!newPost.text || !newPost.user_id) {
       res
         .status(400)
         .json({ error: "Please provide text for the post." });
@@ -62,97 +62,6 @@ postsRouter.post("/", (req, res) => {
         });
     }
   });
-
-
-
-/*
-postsRouter.post("/", (req, res) => {
-  const newPost = req.body;
-  const userId = req.params.id;
-  console.log("Request Body: ", newPost);
-  posts
-    .getById(userId)
-    .then(user => {
-      if (!user) {
-        res.status(404).json({ error: "User doesn't exists." });
-      } else {
-        if (!newPost.text) {
-          res.status(400).json({ error: "Please provide text for the post." });
-        } else {
-          posts
-            .insert(newPost)
-            .then(post => {
-              res.status(201).json(post);
-            })
-            .catch(err => {
-              res.status(500).json({
-                error:
-                  "There was an error while saving the post to the database."
-              });
-            });
-        }
-      }
-    })
-    .catch(err => {
-      res.status(400).json({ error: "Please provide text for the post." });
-    });
-});
-*/
-
-/*
- 
- // ========== ORIGINAL ==============
-
- postsRouter.post("/", (req, res) => {
-    const newPost = req.body;
-    const newPostId = req.params.id;
-    console.log("Request Body: ", newPost);
-    if (!newPost.text) {
-      res
-        .status(400)
-        .json({ error: "Please provide text for the post." });
-    } else {
-      posts
-        .insert(newPost)
-        .then(post => {
-          res.status(201).json(post);
-        })
-        .catch(err => {
-          res.status(500).json({
-            error: "There was an error while saving the post to the database."
-          });
-        });
-    }
-  });
- 
- 
-  // ===== TESTING NEW METHOD ======
-
-  postsRouter.post("/", (req, res) => {
-    const newPost = req.body;
-    const newPostId = req.params.id;
-    console.log("Request Body: ", newPost);
-    if (!newPost.text) {
-      res
-        .status(400)
-        .json({ error: "Please provide text for the post." });
-    } else {
-      posts
-        .insert(newPost)
-        .then(post => {
-            posts.getById(newPostId);
-          res.status(201).json(post);
-        })
-        .catch(err => {
-          res.status(500).json({
-            error: "There was an error while saving the post to the database."
-          });
-        });
-    }
-  });
- 
- */
- 
  
 
 // DELETE =================
